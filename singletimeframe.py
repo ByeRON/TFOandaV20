@@ -86,7 +86,7 @@ def strategy():
 	pass
 
 def can_update(recv, data, num_stick=0):
-	dummy_tick = pd.Series(float(recv["tick"]["bid"]),index=[pd.to_datetime(recv["tick"]["time"])])
+	dummy_tick = pd.Series(float(recv["bids"][0]["price"]),index=[pd.to_datetime(recv["time"])])
 	dummy_tickdata = data.tickdata.append(dummy_tick)
 	dummy_ohlc = dummy_tickdata.resample(data.rate).ohlc()
 	
@@ -95,9 +95,17 @@ def can_update(recv, data, num_stick=0):
 	else:
 		return False
 
+def has_price(msg):
+	msg = convert_byte_into_dict(msg)
+	if msg["type"] == "PRICE":
+		return True
+	else:
+		return False
+
 def preprocess(response, data, size):
 	for line in response.iter_lines(1):
-		if has_tick_in_byte(line):
+		if has_price(line):
+		#if has_tick_in_byte(line):
 			recv = convert_byte_into_dict(line)
 			if can_update(recv,data,num_stick=size) == True:
 				data.update_ohlc()
@@ -112,7 +120,8 @@ def preprocess(response, data, size):
 def mainroutine(response, data):
 	plot = FXVisual()
 	for line in response.iter_lines(1):
-		if has_tick_in_byte(line):
+		if has_price(line):
+		#if has_tick_in_byte(line):
 			recv = convert_byte_into_dict(line)
 			if can_update(recv,data) == True:
 				print(data.ohlc)
