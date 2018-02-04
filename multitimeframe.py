@@ -28,11 +28,13 @@ def connect_to_stream(instruments, environment="demo"):
 	try:
 		s = requests.Session()
 		#url = "https://" + domain + "/v1/prices"
+		#url = "https://" + domain + "/v3/accounts/" + account_id +"/pricing"
 		url = "https://" + domain + "/v3/accounts/" + account_id +"/pricing/stream"
 		headers = {'Authorization':'Bearer ' + access_token, 
 					#'X-Accept-Datetime-Format':'unix'
 					}
 		params = {'instruments':instruments, 'accountId':account_id}
+		#params = {'instruments':instruments, 'since':"2018-02-01T00:00:00.000000000Z"}
 		req = requests.Request('GET', url, headers = headers, params = params)
 		pre = req.prepare()
 		resp = s.send(pre, stream = True, verify = True)
