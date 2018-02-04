@@ -33,7 +33,8 @@ def connect_to_stream(instruments, environment="demo"):
 		headers = {'Authorization':'Bearer ' + access_token, 
 					#'X-Accept-Datetime-Format':'unix'
 					}
-		params = {'instruments':instruments, 'accountId':account_id}
+		params = {'instruments':instruments}
+		#params = {'instruments':instruments, 'accountId':account_id}
 		#params = {'instruments':instruments, 'since':"2018-02-01T00:00:00.000000000Z"}
 		req = requests.Request('GET', url, headers = headers, params = params)
 		pre = req.prepare()
